@@ -51,9 +51,6 @@ class _AddPostState extends State<AddPost> {
   }
 
 
-
-
-
   @override
   void dispose() {
     // Dispose the FocusNode when done
@@ -73,7 +70,7 @@ class _AddPostState extends State<AddPost> {
         //backgroundColor: Colors.white,
         body: Stack(
           children:[
-            BackGround(),
+            //BackGround(),
             SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
@@ -458,9 +455,15 @@ class _AddPostState extends State<AddPost> {
                             itemCount: filteredPlaces.length,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                title: Text(filteredPlaces[index],
-                                    style: GoogleFonts.montserrat(
-                                        color: Colors.grey)),
+                                title: Row(
+                                  children: [
+                                    Icon(Icons.location_on,size: 15),
+                                    SizedBox(width: 10,),
+                                    Text(filteredPlaces[index],
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.grey)),
+                                  ],
+                                ),
                                 onTap: () {
                                   titleController.text = filteredPlaces[index];
                                   // Set showSuggestions to false when a suggestion is selected

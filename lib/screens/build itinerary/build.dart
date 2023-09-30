@@ -62,7 +62,7 @@ class _StepperScreenState extends State<StepperScreen> {
         //backgroundColor: Colors.white,
         body: Stack(children: [
           Opacity(
-            opacity: 0.1,
+            opacity: 0.5,
               child: Image.network(
                   'https://img.freepik.com/free-photo/one-person-standing-cliff-achieving-success-generated-by-ai_188544-11834.jpg',
                   fit: BoxFit.cover,
@@ -111,7 +111,7 @@ class _StepperScreenState extends State<StepperScreen> {
             child: Center(
               child: Text(
                 'Next',
-                style: GoogleFonts.montserrat(color: Colors.white, fontSize: 18),
+                style: GoogleFonts.montserrat(color: Colors.black, fontSize: 18),
               ),
             ),
           ),

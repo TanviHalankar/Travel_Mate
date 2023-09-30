@@ -25,9 +25,8 @@ void main()async{
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -40,12 +39,13 @@ class MyApp extends StatelessWidget {
         title: 'Travel Mate',
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        darkTheme: darkTheme,
-
+        //themeMode: ThemeMode.dark,
+        darkTheme: darkTheme, // Use the custom dark theme
         home: const SplashScreenPage(),
       ),
     );
   }
 }
+
 
 

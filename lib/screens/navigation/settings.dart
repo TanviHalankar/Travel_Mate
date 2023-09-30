@@ -111,6 +111,7 @@ class _SettingsState extends State<Settings> {
                   }, child: Text('LOGOUT',style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w500),
                   )),
                 ),
+                Text('Upcoming trips')
               ],
             ),
           ),

@@ -41,6 +41,52 @@ Future<int> createPost(String title, String desc, String duration, String catego
   return postId;
 }
 
+// Future<void> createTrips(String title, String desc, String startDate, String endDate, String age1,String age2,String ownerId) async {
+//   final response = await http.post(
+//     Uri.parse('http://'+ip+':9000/trips'),
+//     headers: {'Content-Type': 'application/json'},
+//     body: json.encode({'title':title,'desc':desc,'startDate':startDate, 'endDate':endDate,'age1':age1,'age2':age2,'ownerId':ownerId}),
+//   );
+// }
+
+Future<void> createTrips(String title, String desc, String startDate, String endDate, String age1, String age2, String ownerId, Uint8List? image) async {
+  // Create a Map with the fields
+  var data = {
+    'title': title,
+    'desc': desc,
+    'startDate': startDate,
+    'endDate': endDate,
+    'age1': age1,
+    'age2': age2,
+    'ownerId': ownerId,
+  };
+
+  // Create a multipart request
+  var request = http.MultipartRequest('POST', Uri.parse('http://' + ip + ':9000/trips'));
+
+  // Add text fields to the request
+  request.fields.addAll(data);
+
+  // Add the image file to the request, if available
+  if (image != null) {
+    var imageField = http.MultipartFile.fromBytes('coverPhoto', image, filename: 'image.jpg');
+    request.files.add(imageField);
+  }
+
+  // Send the request and handle the response
+  try {
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('Trip created successfully');
+    } else {
+      print('Failed to create trip. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error sending request: $error');
+  }
+}
+
+
 
 Future<void> createSeason(String season_name, int postId) async {
   final response = await http.post(
@@ -80,14 +126,7 @@ Future<void> createPlaces(int postId,int dayNum,String place) async {
   );
 }
 
-Future<void> createPlace(int pid,String pname,String time, int itid) async {
-  final response = await http.post(
-    Uri.parse('http://$ip:9000/place3'),
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode({'pid':pid,'pname':pname,'time':time, 'itid':itid}),
-  );
-  print("hogaya insert");
-}
+
 // Future<void> followUser(int id, String followerUid, String followingUid) async {
 //   final response = await http.post(
 //     Uri.parse('http://$ip:9000/follow'),

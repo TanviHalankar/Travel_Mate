@@ -242,17 +242,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                 SizedBox(height: 10,),
 
-                Center(
-                    child: FAProgressBar(
-                      currentValue: currentValue,
-                      displayText: '%',
-                      backgroundColor: Colors.brown.shade100,
-                      progressColor: Colors.brown.shade300,
-                      borderRadius: BorderRadius.circular(5),
-                    )),
+
                 Container(
                   width: double.maxFinite,
                   child: ElevatedButton(
+                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
                     onPressed: () {
                       // Implement follow/unfollow logic here
                       // You can check the current relationship status and take appropriate action
@@ -266,19 +260,29 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     },
                     child: Text(
                       isFollowing ? 'Unfollow' : 'Follow',
-                      style: GoogleFonts.montserrat(color: Colors.white),
+                      style: GoogleFonts.montserrat(color: Colors.black),
                     ),
                   ),
                 ),
 
 
+                SizedBox(height: 2,),
+                Center(
+                    child: FAProgressBar(
+                      size: 15,
+                      currentValue: currentValue,
+                      displayText: '%',
+                      backgroundColor: Colors.brown.shade100,
+                      progressColor: Colors.brown.shade300,
+                      borderRadius: BorderRadius.circular(5),
+                    )),
                 SizedBox(height: 5,),
                 Text('(You are ${currentValue}% close to getting TravelMate badge)',style: GoogleFonts.aBeeZee(fontSize: 8,color: Colors.grey)),
                 SizedBox(height: 10,),
                 Divider(color: Colors.grey.shade700,thickness: 1,height: 2,),
                 Row(
                   children: [
-                    Text('My Trips',style: GoogleFonts.montserrat()),
+                    Text('Past Trips',style: GoogleFonts.montserrat()),
                   ],
                 ),
                 SizedBox(height: 10,),

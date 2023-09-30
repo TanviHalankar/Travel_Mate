@@ -478,7 +478,9 @@ class _FavState extends State<Fav> {
                                     }
 
                                   }, icon: post.showSeasons==false?Icon(Icons.arrow_drop_up):Icon(Icons.arrow_drop_down_outlined)),
-                                  ElevatedButton(onPressed: (){
+                                  ElevatedButton(
+                                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
+                                      onPressed: (){
                                     print(post.id);
                                     fetchItinerary(post.id);
                                     // fetchPlaces(post.id);
@@ -490,7 +492,7 @@ class _FavState extends State<Fav> {
                                     //fetchTimes(post.id);
                                     print(post.places);
 
-                                  }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.5)),)),
+                                  }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.black),)),
                                 ],
                               ),
                               SizedBox(height: 8),

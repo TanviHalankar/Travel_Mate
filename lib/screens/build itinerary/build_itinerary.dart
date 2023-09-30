@@ -28,7 +28,7 @@ class _BuildItineraryState extends State<BuildItinerary> {
                 Text(
                   'Crafting  ',
                   style:
-                      GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontSize: 25,fontWeight: FontWeight.w200),
+                      GoogleFonts.montserrat(color: Colors.black, fontSize: 25,fontWeight: FontWeight.w200),
                 ),
                 Text(
                   'Your',
@@ -42,7 +42,7 @@ class _BuildItineraryState extends State<BuildItinerary> {
               child: Text(
                 'Adventure.....',
                 style:
-                    GoogleFonts.montserrat(color: Colors.white.withOpacity(0.8), fontSize: 25,fontWeight: FontWeight.w200),
+                    GoogleFonts.montserrat(color: Colors.black, fontSize: 25,fontWeight: FontWeight.w200),
               ),
             ),
             SizedBox(

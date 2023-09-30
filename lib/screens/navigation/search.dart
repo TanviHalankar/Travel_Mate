@@ -72,7 +72,7 @@ class _SearchState extends State<Search> {
       child: Scaffold(
         body: Stack(
           children:[
-            BackGround(),
+            //BackGround(),
             SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -116,6 +116,7 @@ class _SearchState extends State<Search> {
                         setState(() {
                           showHints= true;
                         });
+                        
                       },
                       onSubmitted: (value) {
                         setState(() {
@@ -123,10 +124,16 @@ class _SearchState extends State<Search> {
                         });
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Search2(name: placesController.text.trim()),));
                       },
+                      onTap: () {
+                        setState(() {
+                          showHints = false;
+                        });
+
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(borderRadius: BorderRadius.zero),
                           prefixIcon: Icon(Icons.search,color: Colors.grey,),
-                          hintText: 'Search...',
+                          hintText: 'e.g. Mumbai',
                           //labelText: 'Title',
                           hintStyle: GoogleFonts.montserrat(color: Colors.grey)
                       ),

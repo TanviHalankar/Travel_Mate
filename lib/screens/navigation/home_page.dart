@@ -99,8 +99,8 @@ class _HomePage2State extends State<HomePage2> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('WELCOME  ',style: GoogleFonts.aboreto(fontSize: 40)),
-                          Text('${users[0].username}',style: GoogleFonts.aboreto(fontSize: 40,color: Colors.orange))
+                          Text('WELCOME  ',style: GoogleFonts.aboreto(fontSize: 35)),
+                          Text('${users[0].username}',style: GoogleFonts.aboreto(fontSize: 30,color: Colors.green.shade200))
                         ],
                       ),
                     
@@ -130,7 +130,7 @@ class _HomePage2State extends State<HomePage2> {
 
                   ],
                 ),
-
+                SizedBox(height: 20,),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(

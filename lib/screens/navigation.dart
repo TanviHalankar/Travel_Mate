@@ -189,7 +189,7 @@ class _NavigationState extends State<Navigation> {
         onPressed: () {
           _showModalBottomSheet(context);
         },
-        child: Icon(LineIcons.plus, color: Colors.blueGrey.shade900,size: 35),
+        child: Icon(LineIcons.plus, color: Colors.white,size: 35),
         //backgroundColor: Theme.of(context).colorScheme.primary,
         backgroundColor: Colors.blueGrey.shade200,
       ),
