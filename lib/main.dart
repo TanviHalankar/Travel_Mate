@@ -5,11 +5,12 @@ import 'package:ttravel_mate/auth/signin.dart';
 import 'package:ttravel_mate/auth/signup.dart';
 import 'package:ttravel_mate/auth/welcome.dart';
 import 'package:ttravel_mate/login_pages/signin.dart';
+import 'package:ttravel_mate/providers/join_trip_state.dart';
 import 'package:ttravel_mate/screens/navigation.dart';
 import 'package:ttravel_mate/screens/splash_screen.dart';
 import 'package:ttravel_mate/themes/dark_theme.dart';
 import 'package:ttravel_mate/themes/light_theme.dart';
-import 'package:ttravel_mate/user_provider.dart';
+import 'package:ttravel_mate/providers/user_provider.dart';
 
 import 'firebase_options.dart';
 
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => JoinTripState(),
         ),
       ],
       child: MaterialApp(

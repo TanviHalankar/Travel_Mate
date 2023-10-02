@@ -14,7 +14,7 @@ class AuthMethods {
     required String email,
     required String phnum,
     required String country,
-    //required Uint8List file,
+    required Uint8List file,
   }) async {
     String res = "Some Error occured";
     try {
@@ -31,7 +31,7 @@ class AuthMethods {
 
 
         //add user to database
-        createUser(uname,password,email,phnum,country,uid);
+        await createUser(uname,password,email,phnum,country,uid,file);
         res = "Success";
       }
     } on FirebaseAuthException catch (err) {

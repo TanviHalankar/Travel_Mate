@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
@@ -5,12 +6,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:ttravel_mate/db_info.dart';
 import 'package:ttravel_mate/widget/back.dart';
 
+import '../../model/users.dart';
 import '../../utils/utils.dart';
 import '../add post/add_post.dart';
 import '../build itinerary/build.dart';
+import '../navigation/tripsPage.dart';
+import 'package:http/http.dart' as http;
 
 class CreateTrip extends StatefulWidget {
   @override
@@ -34,6 +39,13 @@ class _CreateTripState extends State<CreateTrip> {
       return (18 + index).toString();
     }
   });
+
+  String formatDate(DateTime? date) {
+    if (date != null) {
+      return DateFormat('dd/MM/yy').format(date);
+    }
+    return '';
+  }
 
   // void selectImage() async {
   //   Uint8List im = await pickImage(ImageSource.gallery);
@@ -181,7 +193,36 @@ class _CreateTripState extends State<CreateTrip> {
       },
     );
   }
+  List<Users> users=[];
+  Future<void> fetchUsers(String? uid) async {
+    try {
+      final response = await http.get(Uri.parse('http://$ip:9000/users/$uid')); // Pass uid as a query parameter
+      print(uid);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
+        setState(() {
+          // Parse the JSON data and create a list of Post objects
+          users = (data as List).map((model) => Users.fromJson(model)).toList();
+        });
+      } else {
+        print('HTTP Request Error: ${response.statusCode}');
+        throw Exception('Failed to load posts');
+      }
+    } catch (e) {
+      print('Error: $e');
+      // Handle the error, e.g., show an error message to the user
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final User? user = _auth.currentUser;
+    final uid=user?.uid;
+    fetchUsers(uid);
+  }
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -307,7 +348,7 @@ class _CreateTripState extends State<CreateTrip> {
                       Container(
                         width: 160,
                         child: DropdownButtonFormField<String>(
-                          //hint: Text('18'),
+                          hint: Text('Start Age'),
                           items: ageList
                               .map((ageGroup) => DropdownMenuItem<String>(
                                     value: ageGroup,
@@ -325,13 +366,13 @@ class _CreateTripState extends State<CreateTrip> {
                         ),
                       ),
                       Text(
-                        ' --- ',
+                        ' -- ',
                         style: TextStyle(fontSize: 10),
                       ),
                       Container(
                         width: 160,
                         child: DropdownButtonFormField<String>(
-                          hint: Text('18'),
+                          hint: Text('End Age'),
                           items: ageList
                               .map((ageGroup) => DropdownMenuItem<String>(
                                     value: ageGroup,
@@ -388,7 +429,23 @@ class _CreateTripState extends State<CreateTrip> {
                             backgroundColor: MaterialStatePropertyAll(
                                 Colors.white.withOpacity(0.3))),
                         onPressed: () {
-                          createTrips(titleController.text, descController.text, start.toString(), end.toString(), age1, age2, uid!,_image);
+                          if(titleController.text.isNotEmpty&&descController.text.isNotEmpty&&tripDurationController.text.isNotEmpty&&age1.isNotEmpty&&age2.isNotEmpty&&_image!=null)
+                            {
+                              print(users[0].phone_num);
+                              createTrips(titleController.text, descController.text, formatDate(start), formatDate(end), age1, age2, uid!,users[0].phone_num,_image);
+                              Navigator.pop(context);
+                              //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TripsPage(),));
+                            }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text('Please Fill All The Details!',style: GoogleFonts.montserrat(color: Colors.white)),
+                                backgroundColor: Colors.blueGrey.shade600,
+                              ),
+                            );
+                          }
+                          
                         },
                         child: Text(
                           'ADD ITINERARY',

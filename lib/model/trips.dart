@@ -8,6 +8,8 @@ class Trips{
   final String age2;
   final String ownerId;
   final String coverPhoto;
+  final String ownerPhn;
+  bool requestSent;
 
   Trips(
       {
@@ -19,7 +21,10 @@ class Trips{
         required this.age1,
         required this.age2,
         required this.ownerId,
-        required this.coverPhoto});
+        required this.coverPhoto,
+        required this.ownerPhn,
+        this.requestSent=false
+      });
 
   factory Trips.fromJson(Map<String, dynamic> json) {
     return Trips(
@@ -32,6 +37,7 @@ class Trips{
       age2: json["age2"],
       ownerId: json["ownerId"],
       coverPhoto: json["coverPhoto"],
+        ownerPhn:json["ownerPhn"]
     );
   }
 }

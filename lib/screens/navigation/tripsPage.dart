@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_slider/carousel_slider_indicators.dart';
 import 'package:flutter_carousel_slider/carousel_slider_transforms.dart';
@@ -8,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_carousel_slider/carousel_slider.dart' as c;
 import 'package:line_icons/line_icons.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 
 import '../../db_info.dart';
 import '../../model/trips.dart';
@@ -15,14 +17,14 @@ import '../Create Trip/create_trip.dart';
 import '../Create Trip/view_trip.dart';
 import '../search2.dart';
 
-class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+class TripsPage extends StatefulWidget {
+  const TripsPage({Key? key}) : super(key: key);
 
   @override
-  State<NotificationPage> createState() => _NotificationPageState();
+  State<TripsPage> createState() => _TripsPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
+class _TripsPageState extends State<TripsPage> {
   GlobalKey<CarouselSliderState> _sliderKey = GlobalKey();
   late Future<List<Trips>> futureTrips;
 
@@ -35,21 +37,34 @@ class _NotificationPageState extends State<NotificationPage> {
       throw Exception('Failed to load trips');
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    fetchTrips();
     futureTrips = fetchTrips();
   }
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final User? user = _auth.currentUser;
+    final uid = user?.uid;
     return SafeArea(
       child: Scaffold(
         body: FutureBuilder<List<Trips>>(
           future: futureTrips,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return
+            Center(
+            child: Lottie.asset(
+            'assets/lottie/loading_animation.json', // replace with your Lottie animation file
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+            ),
+            );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
@@ -87,7 +102,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     height: 20,
                   ),
                   Container(
-                    height: 590,
+                    height: 650,
                     child: ListView.builder(
                       itemCount: trips.length,
                       itemBuilder: (context, index) {
@@ -98,7 +113,7 @@ class _NotificationPageState extends State<NotificationPage> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewTrip(tripId:trip.tripId),));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ViewTrip(tripId:trip.tripId,memberId:uid,),));
                                 },
                                 child: Stack(children: [
                                   Container(
@@ -106,10 +121,10 @@ class _NotificationPageState extends State<NotificationPage> {
                                     color: Colors.black,
                                   ),
                                   Opacity(
-                                    opacity: 0.6,
+                                    opacity: 0.7,
                                     child: Container(
                                       width: double.maxFinite,
-                                      height: 350,
+                                      height: 320,
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image: NetworkImage('http://$ip:9000/${trip.coverPhoto}'),
@@ -118,25 +133,25 @@ class _NotificationPageState extends State<NotificationPage> {
                                   ),
                                   Positioned(
                                       left: 20,
-                                      bottom: 50,
+                                      bottom: 60,
                                       child: Container(
                                           width: 250,
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(trip.startDate,
+                                              Text(
+                                                trip.title,
+                                                style: GoogleFonts.montserrat(
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white.withOpacity(0.7)),
+                                              ),
+                                              SizedBox(height: 10),
+                                              Text('${trip.startDate}-${trip.endDate}',
                                                   style: GoogleFonts.montserrat(
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.w500,
                                                       color: Colors.white.withOpacity(0.7))),
-                                              SizedBox(height: 20),
-                                              Text(
-                                                trip.desc,
-                                                style: GoogleFonts.montserrat(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.white.withOpacity(0.7)),
-                                              ),
                                             ],
                                           ))),
                                   Positioned(

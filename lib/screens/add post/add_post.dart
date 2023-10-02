@@ -421,6 +421,7 @@ class _AddPostState extends State<AddPost> {
 
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
+                                          duration: Duration(seconds: 1),
                                           content: Text('Please Fill All The Details!',style: GoogleFonts.montserrat(color: Colors.white)),
                                           backgroundColor: Colors.blueGrey.shade600,
                                         ),

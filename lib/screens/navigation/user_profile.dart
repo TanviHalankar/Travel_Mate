@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:ttravel_mate/screens/navigation/settings.dart';
 
 import '../../db_info.dart';
@@ -12,6 +13,7 @@ import '../../model/itinerary.dart';
 import '../../model/post.dart';
 
 import '../../model/seasons.dart';
+import '../../model/trips.dart';
 import '../../model/users.dart';
 import '../../widget/back.dart';
 import '../add post/view itinerary.dart';
@@ -35,6 +37,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   int followersCount = 0;
   int followingCount = 0;
   bool isFollowing=false;
+  List<dynamic> tripList=[];
 
   @override
   void initState() {
@@ -45,6 +48,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     fetchPostsById(uid);
     fetchFollowersCount(uid);
     fetchFollowingCount(uid);
+    fetchTrips();
   }
   void followUser() {
     // Send a request to the server to follow the user
@@ -63,6 +67,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
     });
   }
 
+  Future<List<Trips>> fetchTrips() async {
+    final response = await http.get(Uri.parse('http://$ip:9000/trips'));
+    if (response.statusCode == 200) {
+      tripList = json.decode(response.body);
+      return tripList.map((tripData) => Trips.fromJson(tripData)).toList();
+    } else {
+      throw Exception('Failed to load trips');
+    }
+  }
   Future<void> fetchFollowersCount(String? uid) async {
     try {
       final response = await http.get(
@@ -186,7 +199,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(users: widget.users),));
           }, icon: Icon(Icons.settings),color: Colors.white,),],
         ),
-        body: SingleChildScrollView(
+        body: widget.users.isNotEmpty?SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -194,7 +207,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
               children: [
                 CircleAvatar(
                   radius: 60,
-                  backgroundImage: NetworkImage('https://img.freepik.com/premium-photo/woman-female-young-adult-girl-abstract-minimalist-face-portrait-digital-generated-illustration-cover_840789-1569.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais',//'https://img.freepik.com/premium-photo/man-wearing-sunglasses-shirt-with-white-collar_14117-15974.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais'
+                  backgroundImage: NetworkImage(
+                      'http://$ip:9000/${widget.users[0].profilePic}'
+                    //'https://img.freepik.com/premium-photo/woman-female-young-adult-girl-abstract-minimalist-face-portrait-digital-generated-illustration-cover_840789-1569.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais',//'https://img.freepik.com/premium-photo/man-wearing-sunglasses-shirt-with-white-collar_14117-15974.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais'
                      ),
                 ),
                 SizedBox(height: 20),
@@ -218,9 +233,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:[
-                    buildCountColumn('Trips', '${posts.length}'),
-                    buildCountColumn('Followers', followersCount.toString()),
-                    buildCountColumn('Following', followingCount.toString()),
+                    buildCountColumn('Past Trips', '${posts.length}'),
+                    buildCountColumn('Upcoming Trips','${tripList.length}'),
+                    //buildCountColumn('Followers', followersCount.toString()),
+                    //buildCountColumn('Following', followingCount.toString()),
                   ],
                 ),
                 SizedBox(height: 10,),
@@ -243,27 +259,27 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 SizedBox(height: 10,),
 
 
-                Container(
-                  width: double.maxFinite,
-                  child: ElevatedButton(
-                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
-                    onPressed: () {
-                      // Implement follow/unfollow logic here
-                      // You can check the current relationship status and take appropriate action
-                      if (isFollowing) {
-                        // User is currently following, so unfollow
-                        unfollowUser();
-                      } else {
-                        // User is not following, so follow
-                        followUser();
-                      }
-                    },
-                    child: Text(
-                      isFollowing ? 'Unfollow' : 'Follow',
-                      style: GoogleFonts.montserrat(color: Colors.black),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   width: double.maxFinite,
+                //   child: ElevatedButton(
+                //     style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
+                //     onPressed: () {
+                //       // Implement follow/unfollow logic here
+                //       // You can check the current relationship status and take appropriate action
+                //       if (isFollowing) {
+                //         // User is currently following, so unfollow
+                //         unfollowUser();
+                //       } else {
+                //         // User is not following, so follow
+                //         followUser();
+                //       }
+                //     },
+                //     child: Text(
+                //       isFollowing ? 'Unfollow' : 'Follow',
+                //       style: GoogleFonts.montserrat(color: Colors.black),
+                //     ),
+                //   ),
+                // ),
 
 
                 SizedBox(height: 2,),
@@ -366,7 +382,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                                     fontSize: 15, fontWeight: FontWeight.bold),
                                               ),
                                               Text(
-                                                '\₹${post.budget.toStringAsFixed(2)}',
+                                                '\₹${post.budget.toStringAsFixed(2)}k',
                                                 style: GoogleFonts.montserrat(fontSize: 15),
                                               ),
                                             ],
@@ -440,6 +456,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
               ],
             ),
+          ),
+        ):
+        Center(
+          child: Lottie.asset(
+            'assets/lottie/loading_animation.json', // replace with your Lottie animation file
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
           ),
         ),
       ),

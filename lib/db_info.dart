@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 String ip='192.168.160.125';
 //String ip='192.168.1.9';
+//String ip='192.168.29.12';
 
 // Future<void> createPost(String title,String desc,String duration,String category,double budget) async {
 //   final response = await http.post(
@@ -15,18 +16,88 @@ String ip='192.168.160.125';
 // }
 
 
-Future<int> createUser(String username,String password,String email,String phone_num,String country,String uid) async {
-  final response = await http.post(
-    Uri.parse('http://'+ip+':9000/users'),
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode({'username': username,'password':password,'email': email, 'phone_num': phone_num, 'country': country,'uid':uid}),
-  );
+// Future<int> createUser(String username,String password,String email,String phone_num,String country,String uid) async {
+//   final response = await http.post(
+//     Uri.parse('http://'+ip+':9000/users'),
+//     headers: {'Content-Type': 'application/json'},
+//     body: json.encode({'username': username,'password':password,'email': email, 'phone_num': phone_num, 'country': country,'uid':uid}),
+//   );
+//
+//   final Map<String, dynamic> responseData = json.decode(response.body);
+//   final int userId = responseData['id'];
+//   return userId;
+// }
+Future<void> createUser(String username, String password, String email, String phone_num, String country, String uid, Uint8List? image) async {
+  // Create a Map with the fields
+  var data = {
+    'username': username,
+    'password':password,
+    'uid': uid,
+    'email': email,
+    'phone_num': phone_num,
+    'country': country,
+  };
 
-  final Map<String, dynamic> responseData = json.decode(response.body);
-  final int userId = responseData['id'];
-  return userId;
+  // Create a multipart request
+  var request = http.MultipartRequest('POST', Uri.parse('http://' + ip + ':9000/users'));
+
+  // Add text fields to the request
+  request.fields.addAll(data);
+
+  // Add the image file to the request, if available
+  if (image != null) {
+    var imageField = http.MultipartFile.fromBytes('profilePic', image, filename: 'image.jpg');
+    request.files.add(imageField);
+  }
+
+  // Send the request and handle the response
+  try {
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      print('User created successfully');
+    } else {
+      print('Failed to create user. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error sending request: $error');
+  }
 }
 
+// Future<void> createUser(String username,String password,String email,String phone_num,String country,String uid,Uint8List? image) async {
+//   // Create a Map with the fields
+//   var data = {
+//     'username':username ,
+//     'password':password,
+//     'uid': uid ,
+//     'email': email,
+//     'phone_num': phone_num,
+//     'country': country,
+//   };
+//
+//   // Create a multipart request
+//   var request = http.MultipartRequest('POST', Uri.parse('http://' + ip + ':9000/users'));
+//
+//   // Add text fields to the request
+//   request.fields.addAll(data);
+//
+//   // Add the image file to the request, if available
+//   if (image != null) {
+//     var imageField = http.MultipartFile.fromBytes('profilePic', image, filename: 'image.jpg');
+//     request.files.add(imageField);
+//   }
+//
+//   // Send the request and handle the response
+//   try {
+//     var response = await request.send();
+//     if (response.statusCode == 200) {
+//       print('User created successfully');
+//     } else {
+//       print('Failed to create user. Status code: ${response.statusCode}');
+//     }
+//   } catch (error) {
+//     print('Error sending request: $error');
+//   }
+// }
 Future<int> createPost(String title, String desc, String duration, String category, double budget,String uid) async {
   final response = await http.post(
     Uri.parse('http://'+ip+':9000/posts'),
@@ -49,7 +120,7 @@ Future<int> createPost(String title, String desc, String duration, String catego
 //   );
 // }
 
-Future<void> createTrips(String title, String desc, String startDate, String endDate, String age1, String age2, String ownerId, Uint8List? image) async {
+Future<void> createTrips(String title, String desc, String startDate, String endDate, String age1, String age2, String ownerId, String ownerPhn,Uint8List? image) async {
   // Create a Map with the fields
   var data = {
     'title': title,
@@ -59,6 +130,7 @@ Future<void> createTrips(String title, String desc, String startDate, String end
     'age1': age1,
     'age2': age2,
     'ownerId': ownerId,
+    'ownerPhn':ownerPhn,
   };
 
   // Create a multipart request
@@ -86,6 +158,14 @@ Future<void> createTrips(String title, String desc, String startDate, String end
   }
 }
 
+Future<void> createMembers(int tripId,String ownerId,String memberId,String status,String userName,String fullName,String age,String phnum,String residence,String gender ) async {
+  print('Member added');
+  final response = await http.post(
+    Uri.parse('http://$ip:9000/members'),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({'tripId':tripId,'ownerId':ownerId,'memberId':memberId,'status':status,'userName':userName,'fullName':fullName,'age':age,'phnum':phnum,'residence':residence,'gender':gender}),
+  );
+}
 
 
 Future<void> createSeason(String season_name, int postId) async {
@@ -125,6 +205,7 @@ Future<void> createPlaces(int postId,int dayNum,String place) async {
     body: json.encode({'postId':postId,'dayNum':dayNum,'place':place}),
   );
 }
+
 
 
 // Future<void> followUser(int id, String followerUid, String followingUid) async {

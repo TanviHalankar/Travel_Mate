@@ -41,13 +41,152 @@ class _SignUpState extends State<SignUp> {
     mobController.dispose();
   }
 
-  void selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
-    setState(() {
-      _image = im;
-    });
-  }
+  // void selectImage() async {
+  //   Uint8List im = await pickImage(ImageSource.gallery);
+  //   setState(() {
+  //     _image = im;
+  //   });
+  // }
+  Future<void> _selectImage() async {
+    final picker = ImagePicker();
 
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+            alignment: AlignmentDirectional.topCenter,
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                  top: -15,
+                  child: Container(
+                    width: 60,
+                    height: 7,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white.withOpacity(0.8)),
+                  )),
+              Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadiusDirectional.only(
+                        topEnd: Radius.circular(20),
+                        topStart: Radius.circular(20)),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          Uint8List im = await pickImage(ImageSource.camera);
+                          setState(() {
+                            _image = im;
+                          });
+                        },
+                        child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: NetworkImage('https://cdn-icons-png.flaticon.com/128/3004/3004613.png?ga=GA1.1.2014633652.1690347742&track=ais'),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                Text(
+                                  'CAMERA',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.black),
+                                )
+                              ],
+                            ),
+                            height: 100,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 10,
+                                  offset: Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            )),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          Uint8List im = await pickImage(ImageSource.gallery);
+                          setState(() {
+                            _image = im;
+                          });
+                        },
+                        child: Container(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image(
+                                  image: NetworkImage('https://cdn-icons-png.flaticon.com/128/3342/3342137.png?ga=GA1.1.2014633652.1690347742&track=ais'),
+                                  width: 50,
+                                  height: 50,
+                                ),
+                                Text(
+                                  'GALLERY',
+                                  style: TextStyle(
+                                      fontSize: 10, color: Colors.black),
+                                )
+                              ],
+                            ),
+                            height: 100,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 10,
+                                  offset: Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            )),
+                      ),
+                    ],
+                  )),
+            ]);
+        //   Row(
+        //   children: [GestureDetector(
+        //     child: Text('Take a picture'),
+        //     onTap: () async {
+        //       Navigator.pop(context);
+        //         Uint8List im = await pickImage(ImageSource.camera);
+        //         setState(() {
+        //           _image = im;
+        //         });
+        //     },
+        //   ),
+        //   Padding(padding: EdgeInsets.all(8.0)),
+        //   GestureDetector(
+        //     child: Text('Choose from gallery'),
+        //     onTap: () async {
+        //       Navigator.pop(context);
+        //         Uint8List im = await pickImage(ImageSource.gallery);
+        //         setState(() {
+        //           _image = im;
+        //         });
+        //     },
+        //   ),
+        // ]
+        // );
+      },
+    );
+  }
   void signUpUser() async {
     setState(() {
       _isLoading = true;
@@ -58,8 +197,7 @@ class _SignUpState extends State<SignUp> {
         email: emailController.text,
         phnum: mobController.text,
         country: countryController.text,
-
-        //file: _image!
+        file: _image!
         //file:
         );
     setState(() {
@@ -114,7 +252,7 @@ class _SignUpState extends State<SignUp> {
                           bottom: 0,
                           left: 85,
                           child: IconButton(
-                            onPressed: selectImage,
+                            onPressed: _selectImage,
                             icon: Icon(Icons.add_a_photo,color: Colors.orange,size: 40),
                           )),
                     ],
@@ -146,7 +284,12 @@ class _SignUpState extends State<SignUp> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            if (!value.contains('@')||!value.contains('.')) {
+                            // if (!value.contains('@')||!value.contains('.')) {
+                            //   return 'Invalid Email';
+                            // }
+                            if (!RegExp(
+                                r'^[\w-]+(\.[\w-]+)*@[a-zA-Z\d-]+(\.[a-zA-Z\d-]+)*(\.[a-zA-Z]{2,})$')
+                                .hasMatch(value)) {
                               return 'Invalid Email';
                             }
                             return null;
@@ -193,8 +336,11 @@ class _SignUpState extends State<SignUp> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
-                          if(value.length<8){
-                            return 'Too Short.Minimum length should be 8';
+                          if (value.length < 8) {
+                            return 'Too Short...minimum length should be 8';
+                          }
+                          if (!RegExp(r'[!@#$%^&*(),.?":{}|<>0-9]').hasMatch(value)) {
+                            return 'Password must contain at least one special character and one digit';
                           }
                           // if (!value.contains(RegExp(r'\d'))) {
                           //   return 'Password must contain at least one digit';
@@ -208,6 +354,7 @@ class _SignUpState extends State<SignUp> {
                           height: 20,
                         ),
                         ValidationText(
+                          keyboardType: TextInputType.phone,
                           controller: mobController,
                           hint_text: 'Phone Number',
                           hintColor: Colors.white,
@@ -215,9 +362,12 @@ class _SignUpState extends State<SignUp> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your phone number';
                             }
-                            if (value.length != 10) {
-                              return 'Invalid phone number(Atleast 10 digit)';
+                            if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                              return 'Invalid phone number (At least 10 digits)';
                             }
+                            // if (value.length != 10) {
+                            //   return 'Invalid phone number(Atleast 10 digit)';
+                            // }
                             return null;
                           },
                         ),

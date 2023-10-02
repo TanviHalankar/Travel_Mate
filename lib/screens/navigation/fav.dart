@@ -18,7 +18,7 @@ import '../../model/post.dart';
 import '../../model/seasons.dart';
 import '../../model/time.dart';
 import '../../model/users.dart';
-import '../../user_provider.dart';
+import '../../providers/user_provider.dart';
 
 class Fav extends StatefulWidget {
   final String? uid;
@@ -456,7 +456,7 @@ class _FavState extends State<Fav> {
                                         fontSize: 15, fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    '\₹${post.budget.toStringAsFixed(2)}',
+                                    '\₹${post.budget.toStringAsFixed(2)} k',
                                     style: GoogleFonts.montserrat(fontSize: 15),
                                   ),
                                 ],

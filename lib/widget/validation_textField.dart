@@ -9,6 +9,7 @@ class ValidationText extends StatelessWidget {
   final suffix_icon;
   final hintColor;
   final labelColor;
+  final keyboardType;
   final String? Function(String?)? validation;
   final void Function(String)? onChanged;
   final void Function(String)? onFieldSubmitted;
@@ -19,6 +20,7 @@ class ValidationText extends StatelessWidget {
       required this.hint_text,
         this.prefix_icon,
         this.suffix_icon,
+        this.keyboardType,
       this.validation,
       this.obscureText = false,
         this.hintColor = Colors.black,
@@ -32,6 +34,7 @@ class ValidationText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
         controller: controller,
         cursorColor: Colors.white,
         onTap: onTap,

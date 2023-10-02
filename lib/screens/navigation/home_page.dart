@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:ttravel_mate/login_pages/signin.dart';
 import 'package:ttravel_mate/screens/category_search.dart';
 import 'package:ttravel_mate/screens/navigation.dart';
@@ -13,6 +14,7 @@ import 'package:ttravel_mate/screens/search2.dart';
 import 'package:ttravel_mate/widget/back.dart';
 import 'package:ttravel_mate/model/users.dart' as model;
 import 'package:http/http.dart' as http;
+
 
 import '../../data/locations.dart';
 import '../../model/users.dart';
@@ -83,7 +85,7 @@ class _HomePage2State extends State<HomePage2> {
   @override
   Widget build(BuildContext context) => SafeArea(
     child: Scaffold(
-      body:Stack(
+      body:users.isNotEmpty?Stack(
         children:[
           //BackGround(),
           SingleChildScrollView(
@@ -105,7 +107,7 @@ class _HomePage2State extends State<HomePage2> {
                       ),
                     
                     CircleAvatar(
-                      radius: 30, // Adjust the radius as needed
+                      radius: 40, // Adjust the radius as needed
                       backgroundColor: Colors.transparent, // You can set a background color if desired
                       child: InkWell(
                         onTap: () {
@@ -117,13 +119,10 @@ class _HomePage2State extends State<HomePage2> {
                           );
                         },
                         child: ClipOval(
-                          child: Image.network(
-                            'https://img.freepik.com/premium-photo/woman-female-young-adult-girl-abstract-minimalist-face-portrait-digital-generated-illustration-cover_840789-1569.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais',
-                            //'https://img.freepik.com/premium-photo/man-wearing-sunglasses-shirt-with-white-collar_14117-15974.jpg?size=626&ext=jpg&ga=GA1.1.2014633652.1690347742&semt=ais',
-                            width: 100, // Adjust the width as needed
-                            height: 100, // Adjust the height as needed
-                            fit: BoxFit.cover, // Fit the image within the circle
-                          ),
+                          child:Image.network('http://$ip:9000/${users[0].profilePic}',
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover),
                         ),
                       ),
                     )
@@ -237,13 +236,21 @@ class _HomePage2State extends State<HomePage2> {
                 SizedBox(
                   height: 25,
                 ),
-                LocationsWidget(),
+                //LocationsWidget(),
 
               ],
-            ),
+            )
           ),
         ),]
-      ),
+      ):
+      Center(
+    child: Lottie.asset(
+    'assets/lottie/loading_animation.json', // replace with your Lottie animation file
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover,
+    ),
+  ),
     ),
   );
 }

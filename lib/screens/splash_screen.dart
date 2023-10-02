@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:ttravel_mate/screens/navigation.dart';
 import 'package:ttravel_mate/screens/start_screen.dart';
 import '../login_pages/signup.dart';
@@ -15,19 +16,25 @@ class SplashScreenPage extends StatefulWidget {
   State<SplashScreenPage> createState() => _SplashScreenPageState();
 }
 
-class _SplashScreenPageState extends State<SplashScreenPage> {
+class _SplashScreenPageState extends State<SplashScreenPage>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    //addData();
-    Timer(Duration(seconds: 2), () {
-      Navigator.pushReplacement(
+    _controller = AnimationController(
+      duration: Duration(seconds: 5),
+      vsync: this,
+    );
+
+    Timer(Duration(seconds: 2), () async {
+      await _controller.forward().whenComplete(() {
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => StreamBuilder(
-              stream: FirebaseAuth.instance
-                  .authStateChanges(), //runs when user has signed in or signed out
+          MaterialPageRoute(builder: (context) {
+            return StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
                   if (snapshot.hasData) {
@@ -39,53 +46,31 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                     );
                   }
                 }
-                if(snapshot.connectionState==ConnectionState.waiting){
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
                 return StartScreen();
               },
-            ),
-          ));
+            );
+          }),
+        );
+      });
     });
   }
 
-  /*
-  addData() async{
-    UserProvider _userProvider = Provider.of(context,listen: false);
-    await _userProvider.refreshUser();
-  }
-  */
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    //model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
-      body: Container(
-        //color: Colors.black,
-        child: const Center(
-          child: Image(image: AssetImage('assets/splash.png')),
-        ),
+      body: Lottie.asset(
+        'assets/lottie/splash.json',
+        controller: _controller,
+        height: MediaQuery.of(context).size.height * 1,
+        animate: true,
       ),
     );
   }
-/*
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Center(
-          child: Chewie(
-            controller: _chewieController,
-          ),
-        ),
-      ),
-    );
-  }
-*/
 }
+

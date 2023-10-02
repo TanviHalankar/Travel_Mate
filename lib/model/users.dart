@@ -4,7 +4,7 @@ class Users {
   final String email;
   final String phone_num;
   final String country;
-  //final String photoUrl;
+  final String profilePic;
   // final List followers;
   // final List following;
 
@@ -14,7 +14,7 @@ class Users {
     required this.email,
     required this.phone_num,
     required this.country,
-    //required this.photoUrl,
+    required this.profilePic,
     // required this.followers,
     // required this.following,
   });
@@ -27,7 +27,7 @@ class Users {
       email: json["email"],
       phone_num: json["phone_num"],
       country: json["country"],
-      //photoUrl: json["photoUrl"],
+      profilePic: json["profilePic"],
       // followers: List.of(json["followers"])
       //     .map((i) => i /* can't generate it properly yet */)
       //     .toList(),

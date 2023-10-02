@@ -5,10 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:ttravel_mate/screens/navigation/home_page.dart';
+import 'Create Trip/create_trip.dart';
 import 'add post/add_post.dart';
 import 'build itinerary/build.dart';
 import 'navigation/fav.dart';
-import 'navigation/noti.dart';
+import 'navigation/tripsPage.dart';
 import 'navigation/search.dart';
 import 'package:ttravel_mate/model/users.dart' as model;
 
@@ -37,7 +38,7 @@ class _NavigationState extends State<Navigation> {
     Fav(uid: uid),
     //MapPage(),
     Search(),
-    NotificationPage(),
+    StepperScreen()
   ];
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -92,7 +93,7 @@ class _NavigationState extends State<Navigation> {
                                   height: 50,
                                 ),
                                 Text(
-                                  'ADD TRIP',
+                                  'PAST TRIPS',
                                   style: TextStyle(
                                       fontSize: 10, color: Colors.black),
                                 )
@@ -121,7 +122,7 @@ class _NavigationState extends State<Navigation> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => StepperScreen(),
+                                builder: (context) => TripsPage(),
                               ));
                         },
                         child: Container(
@@ -136,7 +137,7 @@ class _NavigationState extends State<Navigation> {
                                   height: 50,
                                 ),
                                 Text(
-                                  'BUILD ITINERARY',
+                                  'UPCOMING TRIPS',
                                   style: TextStyle(
                                       fontSize: 10, color: Colors.black),
                                 )
@@ -199,7 +200,7 @@ class _NavigationState extends State<Navigation> {
           LineIcons.home,
           LineIcons.heart,
           LineIcons.search,
-          LineIcons.bell,
+          LineIcons.map,
         ],
         elevation: 20,
         activeIndex: _bottomNavIndex,
