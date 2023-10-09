@@ -49,7 +49,7 @@ Future<void> createUser(String username, String password, String email, String p
     var imageField = http.MultipartFile.fromBytes('profilePic', image, filename: 'image.jpg');
     request.files.add(imageField);
   }
-
+  print('Before sending request');
   // Send the request and handle the response
   try {
     var response = await request.send();
@@ -57,11 +57,54 @@ Future<void> createUser(String username, String password, String email, String p
       print('User created successfully');
     } else {
       print('Failed to create user. Status code: ${response.statusCode}');
+      print('Response body: ${await response.stream.bytesToString()}');
     }
   } catch (error) {
     print('Error sending request: $error');
   }
+  print('After sending request');
 }
+
+
+Future<int> createPost(String title, String desc, String duration, String category, double budget, String uid, Uint8List? image) async {
+  // Create a Map<String, String> with the fields
+  var data = {
+    'location': title,
+    'description': desc,
+    'duration': duration,
+    'category': category,
+    'budget': budget.toString(),
+    'uid': uid,
+  };
+
+  // Create a multipart request
+  var request = http.MultipartRequest('POST', Uri.parse('http://' + ip + ':9000/posts'));
+
+  // Add text fields to the request
+  request.fields.addAll(data);
+
+  // Add the image file to the request, if available
+  if (image != null) {
+    var imageField = http.MultipartFile.fromBytes('postCover', image, filename: 'image.jpg');
+    request.files.add(imageField);
+  }
+
+  try {
+    var response = await request.send();
+
+    // Assuming the response contains the newly created postId
+    final Map<String, dynamic> responseData = json.decode(await response.stream.bytesToString());
+    final int postId = responseData['id'];
+
+    return postId;
+  } catch (error) {
+    print('Error sending request: $error');
+    // Handle errors here
+    throw error; // Re-throw the error to propagate it up
+  }
+}
+
+
 
 // Future<void> createUser(String username,String password,String email,String phone_num,String country,String uid,Uint8List? image) async {
 //   // Create a Map with the fields
@@ -98,19 +141,21 @@ Future<void> createUser(String username, String password, String email, String p
 //     print('Error sending request: $error');
 //   }
 // }
-Future<int> createPost(String title, String desc, String duration, String category, double budget,String uid) async {
-  final response = await http.post(
-    Uri.parse('http://'+ip+':9000/posts'),
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode({'location': title, 'description': desc, 'duration': duration, 'category': category, 'budget': budget,'uid':uid}),
-  );
 
-  // Assuming the response contains the newly created postId
-  final Map<String, dynamic> responseData = json.decode(response.body);
-  final int postId = responseData['id'];
 
-  return postId;
-}
+// Future<int> createPost(String title, String desc, String duration, String category, double budget,String uid) async {
+//   final response = await http.post(
+//     Uri.parse('http://'+ip+':9000/posts'),
+//     headers: {'Content-Type': 'application/json'},
+//     body: json.encode({'location': title, 'description': desc, 'duration': duration, 'category': category, 'budget': budget,'uid':uid}),
+//   );
+//
+//   // Assuming the response contains the newly created postId
+//   final Map<String, dynamic> responseData = json.decode(response.body);
+//   final int postId = responseData['id'];
+//
+//   return postId;
+// }
 
 // Future<void> createTrips(String title, String desc, String startDate, String endDate, String age1,String age2,String ownerId) async {
 //   final response = await http.post(

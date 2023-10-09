@@ -27,7 +27,7 @@ class Users {
       email: json["email"],
       phone_num: json["phone_num"],
       country: json["country"],
-      profilePic: json["profilePic"],
+      profilePic: json["profilePic"] ?? "",
       // followers: List.of(json["followers"])
       //     .map((i) => i /* can't generate it properly yet */)
       //     .toList(),

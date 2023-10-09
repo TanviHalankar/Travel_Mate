@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ttravel_mate/login_pages/phone_screen.dart';
 import 'package:ttravel_mate/login_pages/signup.dart';
+import 'package:ttravel_mate/utils/utils.dart';
 
 import '../screens/navigation.dart';
 import '../widget/validation_textField.dart';
@@ -41,8 +42,9 @@ class _SignInState extends State<SignIn> {
     );
     if (res == "success") {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Navigation(),));
-    } else {
-      print(res);
+    }
+    else {
+      showSnackBar(res, context);
     }
     setState(() {
       _isLoading = false;
@@ -150,17 +152,17 @@ class _SignInState extends State<SignIn> {
                               ),
 
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 40),
-                              child: Row(
-                                children: [
-                                  Text('Forgot Password?',style: GoogleFonts.montserrat(fontSize: 10)),
-                                  TextButton(onPressed: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => PhnumScreen(),));
-                                  }, child: Text('Send OTP',style: GoogleFonts.montserrat(fontSize: 13,color: Colors.orange,fontWeight: FontWeight.w300)))
-                                ],
-                              ),
-                            )
+                            // Padding(
+                            //   padding: EdgeInsets.only(left: 40),
+                            //   child: Row(
+                            //     children: [
+                            //       Text('Forgot Password?',style: GoogleFonts.montserrat(fontSize: 10)),
+                            //       TextButton(onPressed: (){
+                            //         Navigator.push(context, MaterialPageRoute(builder: (context) => PhnumScreen(),));
+                            //       }, child: Text('Send OTP',style: GoogleFonts.montserrat(fontSize: 13,color: Colors.orange,fontWeight: FontWeight.w300)))
+                            //     ],
+                            //   ),
+                            // )
 
                           ]),
                         ),

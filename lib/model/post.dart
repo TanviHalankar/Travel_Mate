@@ -11,7 +11,10 @@ class Post {
   final String duration;
   final String category;
   final double budget;
+  final String postCover;
+  int likes;
   bool showSeasons;
+  bool isLiked;
   List<Seasons> seasons;
   List<Itinerary> itinerary;
   List<Places> places;
@@ -24,21 +27,26 @@ class Post {
     required this.duration,
     required this.category,
     required this.budget,
+    required this.postCover,
+    required this.likes,
     this.showSeasons = false,
+    this.isLiked = false,
     this.seasons = const [],
     this.itinerary = const [],
-    this.places= const [],
-    this.times= const [],
+    this.places = const [],
+    this.times = const [],
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-      id:json['postId'],
+      id: json['postId'],
       location: json['location'],
       description: json['description'],
       duration: json['duration'],
       category: json['category'],
       budget: json['budget'].toDouble(),
+      postCover: json['postCover'],
+      likes: json['likes'],
     );
   }
 }

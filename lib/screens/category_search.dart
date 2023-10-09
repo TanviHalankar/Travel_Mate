@@ -188,7 +188,7 @@ class _CategorySearchState extends State<CategorySearch>
                                               FontWeight.bold),
                                         ),
                                         Text(
-                                          '\₹${post.budget.toStringAsFixed(2)}',
+                                          '\₹${post.budget.toStringAsFixed(2)}k',
                                           style: GoogleFonts.montserrat(
                                               fontSize: 15),
                                         ),
@@ -222,6 +222,7 @@ class _CategorySearchState extends State<CategorySearch>
                                                 : Icon(Icons
                                                 .arrow_drop_down_outlined)),
                                         ElevatedButton(
+                                          style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade200)),
                                             onPressed: () {
                                               print(post.id);
 
@@ -244,9 +245,7 @@ class _CategorySearchState extends State<CategorySearch>
                                               'View Itinerary',
                                               style:
                                               GoogleFonts.montserrat(
-                                                  color: Colors.white
-                                                      .withOpacity(
-                                                      0.5)),
+                                                  color: Colors.green.shade900),
                                             )),
                                       ],
                                     ),

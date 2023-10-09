@@ -17,19 +17,20 @@ import '../Create Trip/create_trip.dart';
 import '../Create Trip/view_trip.dart';
 import '../search2.dart';
 
-class TripsPage extends StatefulWidget {
-  const TripsPage({Key? key}) : super(key: key);
+class TripsPage2 extends StatefulWidget {
+  String name;
+  TripsPage2({Key? key,required this.name}) : super(key: key);
 
   @override
-  State<TripsPage> createState() => _TripsPageState();
+  State<TripsPage2> createState() => _TripsPage2State();
 }
 
-class _TripsPageState extends State<TripsPage> {
+class _TripsPage2State extends State<TripsPage2> {
   GlobalKey<CarouselSliderState> _sliderKey = GlobalKey();
   late Future<List<Trips>> futureTrips;
 
-  Future<List<Trips>> fetchTrips() async {
-    final response = await http.get(Uri.parse('http://$ip:9000/trips'));
+  Future<List<Trips>> fetchTripsByTitle(String title) async {
+    final response = await http.get(Uri.parse('http://$ip:9000/trips/title/$title'));
     if (response.statusCode == 200) {
       final List<dynamic> tripList = json.decode(response.body);
       return tripList.map((tripData) => Trips.fromJson(tripData)).toList();
@@ -42,8 +43,7 @@ class _TripsPageState extends State<TripsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchTrips();
-    futureTrips = fetchTrips();
+    futureTrips = fetchTripsByTitle(widget.name);
   }
   @override
   Widget build(BuildContext context) {
@@ -57,55 +57,52 @@ class _TripsPageState extends State<TripsPage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return
-            Center(
-            child: Lottie.asset(
-            'assets/lottie/loading_animation.json', // replace with your Lottie animation file
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-            ),
-            );
+                Center(
+                  child: Lottie.asset(
+                    'assets/lottie/loading_animation.json', // replace with your Lottie animation file
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                );
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return Center(child: Text('No trips availabe'),);
             } else {
               List<Trips> trips = snapshot.data ?? [];
               return Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: double.maxFinite,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              style: BorderStyle.solid, color: Colors.orange.withOpacity(0.2))),
-                      child: OutlinedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                              MaterialStatePropertyAll(Colors.transparent),
-                              side: MaterialStatePropertyAll(BorderSide.none)),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => CreateTrip(),));
-                          },
-                          child: Row(
-                            children: [
-                              Icon(LineIcons.plus, size: 15, color: Colors.white.withOpacity(0.7)),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'CREATE TRIP',
-                                style: GoogleFonts.montserrat(
-                                    color: Colors.white.withOpacity(0.7), fontSize: 10),
-                              ),
-                            ],
-                          )),
-                    ),
-                  ),
+                  // Container(
+                  //   width: double.maxFinite,
+                  //   decoration: BoxDecoration(
+                  //       border: Border.all(
+                  //           style: BorderStyle.solid, color: Colors.orange.withOpacity(0.2))),
+                  //   child: OutlinedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor:
+                  //           MaterialStatePropertyAll(Colors.transparent),
+                  //           side: MaterialStatePropertyAll(BorderSide.none)),
+                  //       onPressed: () {
+                  //         Navigator.push(context, MaterialPageRoute(builder: (context) => CreateTrip(),));
+                  //       },
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(LineIcons.plus, size: 15, color: Colors.white.withOpacity(0.7)),
+                  //           SizedBox(
+                  //             width: 10,
+                  //           ),
+                  //           Text(
+                  //             'CREATE TRIP',
+                  //             style: GoogleFonts.montserrat(
+                  //                 color: Colors.white.withOpacity(0.7), fontSize: 10),
+                  //           ),
+                  //         ],
+                  //       )),
+                  // ),
                   SizedBox(
                     height: 20,
                   ),
                   Container(
-                    height: 600,
+                    height: 300,
                     child: ListView.builder(
                       itemCount: trips.length,
                       itemBuilder: (context, index) {
@@ -161,8 +158,7 @@ class _TripsPageState extends State<TripsPage> {
                                       right: 20,
                                       top: 20,
                                       child: CircleAvatar(
-                                        //backgroundColor: Colors.black,
-                                        backgroundImage: NetworkImage('https://i.pinimg.com/736x/83/bc/8b/83bc8b88cf6bc4b4e04d153a418cde62.jpg'),
+                                        backgroundColor: Colors.black,
                                         radius: 25,
                                       )),
                                   // Positioned(

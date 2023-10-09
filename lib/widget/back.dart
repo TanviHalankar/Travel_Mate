@@ -6,7 +6,7 @@ class BackGround extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: 0.3,
+      opacity: 0.2,
       child: Image.network(
         //'assets/back.png',
         //'https://img.freepik.com/free-vector/travel-pattern-background_23-2148043439.jpg?size=626&ext=jpg&ga=GA1.2.2014633652.1690347742&semt=ais',

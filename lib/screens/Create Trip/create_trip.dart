@@ -285,6 +285,7 @@ class _CreateTripState extends State<CreateTrip> {
                               await showCalendarDatePicker2Dialog(
                             context: context,
                             config: CalendarDatePicker2WithActionButtonsConfig(
+                              firstDate: DateTime.now().add(Duration(days: 15)),
                               cancelButtonTextStyle:
                                   TextStyle(color: Colors.white60),
                               controlsTextStyle: TextStyle(color: Colors.black),
@@ -318,6 +319,10 @@ class _CreateTripState extends State<CreateTrip> {
                             labelText: 'Trip Duration',
                             labelStyle: TextStyle(color: Colors.grey)),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 70),
+                        child: Text("You can't post trips that start within next 15 days",style: GoogleFonts.montserrat(color: Colors.green.shade200,fontSize: 7),),
+                      )
                     ],
                   ),
                   SizedBox(
@@ -448,11 +453,11 @@ class _CreateTripState extends State<CreateTrip> {
                           
                         },
                         child: Text(
-                          'ADD ITINERARY',
+                          'Create Trip',
                           style: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
-                              fontSize: 10),
+                              fontSize: 15),
                         )),
                   ),
                 ],

@@ -100,7 +100,8 @@ class _AddItineraryState extends State<AddItinerary>
     //
     // }
 
-    return Scaffold(
+    return
+      Scaffold(
       //backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.black.withOpacity(0.1),
@@ -252,7 +253,7 @@ class _DayViewState extends State<DayView> {
     return Scaffold(
       //backgroundColor: Colors.white,
       body: Stack(children: [
-        BackGround(),
+        //BackGround(),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: Column(
@@ -272,12 +273,12 @@ class _DayViewState extends State<DayView> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            backgroundColor: Colors.green[100],
+                            backgroundColor: Colors.orange[100],
                             title: Text('New Location',
                                 style: GoogleFonts.montserrat(
-                                    color: Colors.green)),
+                                    color: Colors.black,fontWeight: FontWeight.bold)),
                             content: Container(
-                              height: 100,
+                              height: 120,
                               child: Column(
                                 children: [
                                   TextField(
@@ -299,7 +300,7 @@ class _DayViewState extends State<DayView> {
                                                   .black, // Highlighted color
                                               colorScheme: ColorScheme.dark(
                                                 primary: Colors
-                                                    .green, // Selected time color
+                                                    .orange, // Selected time color
                                                 onPrimary:
                                                     Colors.black, // Text color
                                                 surface: Colors
@@ -326,6 +327,9 @@ class _DayViewState extends State<DayView> {
                                       }
                                     },
                                     decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey), // Change this color
+                                        ),
                                         hintText: 'Time',
                                         hintStyle:
                                             TextStyle(color: Colors.black)),
@@ -338,6 +342,9 @@ class _DayViewState extends State<DayView> {
                                       });
                                     },
                                     decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey), // Change this color
+                                        ),
                                         hintText: 'Place',
                                         hintStyle:
                                             TextStyle(color: Colors.black)),
@@ -350,7 +357,7 @@ class _DayViewState extends State<DayView> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('Cancel'),
+                                child: Text('Cancel',style: GoogleFonts.montserrat(color: Colors.black)),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -362,7 +369,7 @@ class _DayViewState extends State<DayView> {
                                     print(widget.timeList);
                                   }
                                 },
-                                child: Text('Add'),
+                                child: Text('Add',style: GoogleFonts.montserrat(color: Colors.orange,fontWeight: FontWeight.bold)),
                               ),
                             ],
                           );

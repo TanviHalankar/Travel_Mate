@@ -112,95 +112,87 @@ class _ViewItineraryState extends State<ViewItinerary> {
       body: DefaultTabController(
       length: duration,
       child: SafeArea(
-        child: Stack(
-          children: [
-            BackGround(),
-            Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              toolbarHeight: 3,
-              bottom: TabBar(
-                labelColor: Colors.black,
-                indicatorColor: Colors.black,
-                indicator: BoxDecoration(
-                  color: Colors.orange[100],
-                ),
-                isScrollable: true,
-                tabs: _dates.asMap().entries.map((entry) {
-                  return Tab(
-                    text: 'Day ${entry.key + 1}',
-                  );
-                }).toList(),
-              ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TabBarView(
-                children: List.generate(duration, (dayIndex) {
-                  // Filter places for the current day (dayIndex + 1)
-                  final placesForDay = placesData.where((place) => place['dayNum'] == dayIndex + 1).toList();
-                  final timesForDay = timesData.where((time) => time['dayNum'] == dayIndex + 1).toList();
+        child: Scaffold(
+          appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        toolbarHeight: 3,
+        bottom: TabBar(
+          labelColor: Colors.black,
+          indicatorColor: Colors.black,
+          indicator: BoxDecoration(
+            color: Colors.green[100],
+          ),
+          isScrollable: true,
+          tabs: _dates.asMap().entries.map((entry) {
+            return Tab(
+              text: 'Day ${entry.key + 1}',
+            );
+          }).toList(),
+        ),
+          ),
+          body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: TabBarView(
+          children: List.generate(duration, (dayIndex) {
+            // Filter places for the current day (dayIndex + 1)
+            final placesForDay = placesData.where((place) => place['dayNum'] == dayIndex + 1).toList();
+            final timesForDay = timesData.where((time) => time['dayNum'] == dayIndex + 1).toList();
 
-                  // Create a list of widgets for places
-                  final placeWidgets = placesForDay.map((place) {
-                    final correspondingTime = timesForDay.firstWhere(
-                          (time) => time['postId'] == place['postId'] && time['dayNum'] == place['dayNum'],
-                      orElse: () => {'time': 'No time'}, // A default value if no corresponding time is found
-                    );
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 20,right: 13,top: 20),
-                      child: Row(
-                        //crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //SizedBox(height: 20),
-                          //Image(image: AssetImage('assets/location.png'), height: 30),
-                          Text(
-                            place['place'] as String, // Extract 'place' value
-                            style: GoogleFonts.montserrat(fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                          Text(
-                           correspondingTime['time'] as String, // Extract 'place' value
-                            style: GoogleFonts.montserrat(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey.shade400),
-                          ),
-                        ],
+            // Create a list of widgets for places
+            final placeWidgets = placesForDay.map((place) {
+              return
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, bottom: 20, top: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(15)),
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    height: 120,
+                    width: 220,
+                    child: Center(
+                      child: Text(
+                          place['place'] as String,
+                        maxLines: 3,
+                        style: GoogleFonts.montserrat(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.white),
+                      ),
+                    ),
+                  ),
+                );
+
+            }).toList();
+            return ListView.builder(
+                itemCount: placeWidgets.length,
+                itemBuilder: (context, index) {
+                  final timeWidget= timesForDay.map((time){
+                    return Text(
+                      time['time'] as String,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade400,
                       ),
                     );
                   }).toList();
-                  return ListView.builder(
-                    itemCount: placeWidgets.length,
-                    itemBuilder: (context, index) {
-                      return TimelineTile(
-                        beforeLineStyle: LineStyle(color: Colors.white),
-                        afterLineStyle: LineStyle(color: Colors.white),
-                        indicatorStyle: IndicatorStyle(color: Colors.white, width: 30),
-                        endChild: Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 20, top: 20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            height: 90,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Column(
-                                children: [
-                                  placeWidgets[index], // Add the widgets for places
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+                  return TimelineTile(
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0.2,
+                    beforeLineStyle: LineStyle(color: Colors.white, thickness: 2),
+                    indicatorStyle: IndicatorStyle(color: Colors.white, width: 15),
+                    startChild: timeWidget[index],
+                    endChild: placeWidgets[index],
                   );
-                }),
-              ),
-            ),
+                },
+              );
+          }),
+        ),
           ),
-        ]
         ),
       ),
         ),

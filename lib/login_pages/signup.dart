@@ -197,7 +197,7 @@ class _SignUpState extends State<SignUp> {
         email: emailController.text,
         phnum: mobController.text,
         country: countryController.text,
-        file: _image!
+        file: _image
         //file:
         );
     setState(() {
@@ -211,6 +211,9 @@ class _SignUpState extends State<SignUp> {
           MaterialPageRoute(
             builder: (context) => SignIn()
           ));
+      showSnackBar(res, context);
+    }
+    else{
       showSnackBar(res, context);
     }
   }

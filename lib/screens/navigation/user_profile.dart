@@ -196,7 +196,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: [IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(users: widget.users),));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(users: widget.users,posts: posts),));
           }, icon: Icon(Icons.settings),color: Colors.white,),],
         ),
         body: widget.users.isNotEmpty?SingleChildScrollView(

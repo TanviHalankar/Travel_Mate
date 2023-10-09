@@ -96,8 +96,8 @@ class Location {
 }
 
 List locations = [
-  Location(country: 'India', town: 'NKJ', image: 'assets/trek.png'),
-  Location(country: 'USA', town: 'ND,', image: 'assets/beach.png'),
-  Location(country: 'USA', town: 'ND,', image: 'assets/cultural.png'),
-  Location(country: 'USA', town: 'ND,', image: 'assets/fall.png'),
+  Location(country: 'India', town: 'treking', image: 'assets/trek.png'),
+  Location(country: 'Goa', town: 'beach', image: 'assets/beach.png'),
+  Location(country: 'India', town: 'culture', image: 'assets/cultural.png'),
+  Location(country: 'USA', town: 'fall', image: 'assets/fall.png'),
 ];

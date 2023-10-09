@@ -95,6 +95,10 @@ class _AddPostState extends State<AddPost> {
                           focusNode:
                               textFieldFocusNode, // Associate the FocusNode
                           decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.zero,
+                              borderSide: BorderSide(color: Colors.grey), // Change this color
+                            ),
                             border: OutlineInputBorder(),
                             prefixIcon: Icon(
                               LineIcons.pen,
@@ -144,8 +148,12 @@ class _AddPostState extends State<AddPost> {
                                 controller: descController,
                                 maxLines: 2,
                                 decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.zero,
+                                      borderSide: BorderSide(color: Colors.grey), // Change this color
+                                    ),
                                     border: OutlineInputBorder(),
-                                    prefixIcon: Icon(Icons.edit_note),
+                                    prefixIcon: Icon(Icons.edit_note,color: Colors.grey,),
                                     labelText: 'Description',
                                     labelStyle: TextStyle(color: Colors.grey)),
                               ),
@@ -237,6 +245,7 @@ class _AddPostState extends State<AddPost> {
                                     context: context,
                                     config:
                                         CalendarDatePicker2WithActionButtonsConfig(
+                                          lastDate: DateTime.now().subtract(Duration(days: 1)),
                                       cancelButtonTextStyle:
                                           TextStyle(color: Colors.white60),
                                       controlsTextStyle:
@@ -250,6 +259,7 @@ class _AddPostState extends State<AddPost> {
                                       //yearTextStyle: TextStyle(color: Colors.green[200],),
 
                                       calendarType: CalendarDatePicker2Type.range,
+
                                     ),
                                     dialogSize: Size(325, 400),
                                   );
@@ -267,6 +277,10 @@ class _AddPostState extends State<AddPost> {
                                   }
                                 },
                                 decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.zero,
+                                      borderSide: BorderSide(color: Colors.grey), // Change this color
+                                    ),
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(
                                       Icons.calendar_month,
@@ -296,7 +310,9 @@ class _AddPostState extends State<AddPost> {
                             ),
                           ),*/
                               DropdownButtonFormField<String>(
-                                dropdownColor: Colors.black.withOpacity(0.9),
+                                //dropdownColor: Colors.black.withOpacity(0.9),
+                                dropdownColor: Colors.white,
+                                //hint: Text('Category',style: GoogleFonts.montserrat(color: Colors.white)),
                                 value: selectedValue,
                                 items: categories.map<DropdownMenuItem<String>>(
                                   (String value) {
@@ -304,7 +320,7 @@ class _AddPostState extends State<AddPost> {
                                       value: value,
                                       child: Text(
                                         value,
-                                        style: GoogleFonts.montserrat(),
+                                        style: GoogleFonts.montserrat(color: Colors.black),
                                       ),
                                     );
                                   },
@@ -369,6 +385,7 @@ class _AddPostState extends State<AddPost> {
                                 min: _minBudgetValue,
                                 max: _maxBudgetValue,
                                 activeColor: Colors.grey,
+                                inactiveColor: Colors.grey.shade200,
                                 onChanged: (value) {
                                   setState(() {
                                     _budgetValue = value;
@@ -422,8 +439,8 @@ class _AddPostState extends State<AddPost> {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                           duration: Duration(seconds: 1),
-                                          content: Text('Please Fill All The Details!',style: GoogleFonts.montserrat(color: Colors.white)),
-                                          backgroundColor: Colors.blueGrey.shade600,
+                                          content: Text('Please Fill All The Details!',style: GoogleFonts.montserrat(color: Colors.black)),
+                                          backgroundColor: Colors.white,
                                         ),
                                       );
                                     }
@@ -447,7 +464,7 @@ class _AddPostState extends State<AddPost> {
                       if (showSuggestions)
                         Container(
                           decoration:
-                              BoxDecoration(color: Colors.black.withOpacity(0.9)),
+                              BoxDecoration(color:Colors.white),
                           constraints: BoxConstraints(
                               maxHeight:
                                   300), // Set a maximum height for the suggestions
@@ -458,11 +475,11 @@ class _AddPostState extends State<AddPost> {
                               return ListTile(
                                 title: Row(
                                   children: [
-                                    Icon(Icons.location_on,size: 15),
+                                    Icon(Icons.location_on,size: 15,color: Colors.black,),
                                     SizedBox(width: 10,),
                                     Text(filteredPlaces[index],
                                         style: GoogleFonts.montserrat(
-                                            color: Colors.grey)),
+                                            color: Colors.black)),
                                   ],
                                 ),
                                 onTap: () {

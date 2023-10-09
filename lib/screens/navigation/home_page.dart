@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 
 
 import '../../data/locations.dart';
+import '../../model/post.dart';
 import '../../model/users.dart';
 import '../../widget/lists.dart';
 import '../../widget/locations_widget.dart';
@@ -82,6 +83,16 @@ class _HomePage2State extends State<HomePage2> {
       // Handle the error, e.g., show an error message to the user
     }
   }
+
+  Future<List<Post>> fetchTrending() async {
+    final response = await http.get(Uri.parse('http://$ip:9000/posts/trending'));
+    if (response.statusCode == 200) {
+      final List<dynamic> postList = json.decode(response.body);
+      return postList.map((tripData) => Post.fromJson(tripData)).toList();
+    } else {
+      throw Exception('Failed to load posts');
+    }
+  }
   @override
   Widget build(BuildContext context) => SafeArea(
     child: Scaffold(
@@ -102,7 +113,7 @@ class _HomePage2State extends State<HomePage2> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('WELCOME  ',style: GoogleFonts.aboreto(fontSize: 35)),
-                          Text('${users[0].username}',style: GoogleFonts.aboreto(fontSize: 30,color: Colors.green.shade200))
+                          Text('${users[0].username}',style: GoogleFonts.aboreto(fontSize: 30,color: Colors.orange.shade600))
                         ],
                       ),
                     
@@ -119,10 +130,10 @@ class _HomePage2State extends State<HomePage2> {
                           );
                         },
                         child: ClipOval(
-                          child:Image.network('http://$ip:9000/${users[0].profilePic}',
+                          child:users[0].profilePic.isNotEmpty?Image.network('http://$ip:9000/${users[0].profilePic}',
                               height: 100,
                               width: 100,
-                              fit: BoxFit.cover),
+                              fit: BoxFit.cover):Image.asset('assets/profile.jpg',height: 100,width: 100),
                         ),
                       ),
                     )

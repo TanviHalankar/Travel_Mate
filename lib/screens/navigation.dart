@@ -1,17 +1,29 @@
 
+import 'dart:convert';
 import 'dart:ui';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:ttravel_mate/screens/navigation/home1.dart';
 import 'package:ttravel_mate/screens/navigation/home_page.dart';
+import 'package:ttravel_mate/screens/navigation/user_profile.dart';
+import '../db_info.dart';
+import '../map/map.dart';
+import '../model/users.dart';
 import 'Create Trip/create_trip.dart';
 import 'add post/add_post.dart';
 import 'build itinerary/build.dart';
 import 'navigation/fav.dart';
+import 'navigation/fav2.dart';
+import 'navigation/likes_chart.dart';
+import 'navigation/newSearch.dart';
 import 'navigation/tripsPage.dart';
 import 'navigation/search.dart';
+import 'package:http/http.dart' as http;
 import 'package:ttravel_mate/model/users.dart' as model;
+
+import 'navigation/view_posts.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -25,20 +37,53 @@ final User? user = _auth.currentUser;
 String? uid=user?.uid;
 //model.User? uid = Provider.of<UserProvider>(context).getUser;
 
+
 class _NavigationState extends State<Navigation> {
+
+  List<Users> users=[];
+  Future<void> fetchUsers(String? uid) async {
+    try {
+      final response = await http.get(Uri.parse('http://$ip:9000/users/$uid')); // Pass uid as a query parameter
+      print(uid);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        setState(() {
+          // Parse the JSON data and create a list of Post objects
+          users = (data as List).map((model) => Users.fromJson(model)).toList();
+        });
+      } else {
+        print('HTTP Request Error: ${response.statusCode}');
+        throw Exception('Failed to load posts');
+      }
+    } catch (e) {
+      print('Error: $e');
+      // Handle the error, e.g., show an error message to the user
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final User? user = _auth.currentUser;
+    String? uid=user?.uid;
+    fetchUsers(uid);
   }
   final List<Widget> _pages = [
     //HomePage(),
-    HomePage2(),
-    //Home(),
-    Fav(uid: uid),
-    //MapPage(),
-    Search(),
-    StepperScreen()
+    //HomePage2(),
+    Home1(),
+    //Search(),
+    NewSearch(),
+    ViewPosts(),
+    //Fav(uid: uid),
+    //Fav2(uid: uid),
+    MapPage(name: 'Mumbai',),
+
+
+    //StepperScreen()
+
   ];
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -56,10 +101,12 @@ class _NavigationState extends State<Navigation> {
                   top: -15,
                   child: Container(
                     width: 60,
-                    height: 7,
+                    height: 2,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
-                        color: Colors.white.withOpacity(0.8)),
+                        color: Colors.white.withOpacity(0.8),
+
+                    ),
                   )),
               Container(
                   height: 200,
@@ -67,7 +114,8 @@ class _NavigationState extends State<Navigation> {
                     borderRadius: BorderRadiusDirectional.only(
                         topEnd: Radius.circular(20),
                         topStart: Radius.circular(20)),
-                    color: Colors.white,
+                    //color: Colors.white,
+                    color: Colors.black
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -190,28 +238,32 @@ class _NavigationState extends State<Navigation> {
         onPressed: () {
           _showModalBottomSheet(context);
         },
-        child: Icon(LineIcons.plus, color: Colors.white,size: 35),
+        child: Icon(LineIcons.plus, color: Colors.black,size: 45),
         //backgroundColor: Theme.of(context).colorScheme.primary,
-        backgroundColor: Colors.blueGrey.shade200,
+        backgroundColor: Colors.orange.withOpacity(0.8),
+        //backgroundColor: Colors.white,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         icons: [
           LineIcons.home,
-          LineIcons.heart,
+          //LineIcons.heart,
           LineIcons.search,
+          Icons.travel_explore_outlined,
+
           LineIcons.map,
         ],
         elevation: 20,
         activeIndex: _bottomNavIndex,
-        backgroundColor: Colors.blueGrey[800],
+        //backgroundColor: Colors.blueGrey[800],
         //backgroundColor: Colors.teal[900],
         //backgroundColor: Colors.white.withOpacity(0.9),
-        //backgroundColor: Colors.black,
+        backgroundColor: Colors.black,
         //activeColor: Colors.blue[900],
         //activeColor: Colors.green[200],
-        activeColor: Colors.blueGrey.shade200,
-        inactiveColor: Colors.black,
+        activeColor: Colors.orange.shade800,
+        //inactiveColor: Colors.black,
+        inactiveColor: Colors.white,
         gapLocation: GapLocation.center,
         notchSmoothness: NotchSmoothness.sharpEdge,
         leftCornerRadius: 32,

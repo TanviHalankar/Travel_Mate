@@ -7,6 +7,7 @@ import 'package:ttravel_mate/db_info.dart';
 import 'package:ttravel_mate/screens/Create%20Trip/create_trip.dart';
 import 'package:ttravel_mate/screens/Create%20Trip/view_trip.dart';
 import 'package:ttravel_mate/screens/navigation/tripsPage.dart';
+import 'package:ttravel_mate/utils/utils.dart';
 
 import '../../model/users.dart';
 import '../../providers/join_trip_state.dart';
@@ -155,29 +156,33 @@ class _JoinTripState extends State<JoinTrip> {
              ),
              SizedBox(height: 10,),
              Container(width: double.maxFinite,child: ElevatedButton(onPressed: (){
-               if(!joinTripState.getRequestStatus(widget.tripId)) {
-                 createMembers(
-                     widget.tripId,
-                     widget.ownerId,
-                     uid!,
-                     'pending',
-                     users[0].username,
-                     nameController.text,
-                     ageController.text,
-                     phNumController.text,
-                     resController.text,
-                     gender);
+               if(nameController.text.isNotEmpty&&ageController.text.isNotEmpty&&phNumController.text.isNotEmpty &&resController.text.isNotEmpty) {
+                 if (!joinTripState.getRequestStatus(widget.tripId)) {
+                   createMembers(
+                       widget.tripId,
+                       widget.ownerId,
+                       uid!,
+                       'pending',
+                       users[0].username,
+                       nameController.text,
+                       ageController.text,
+                       phNumController.text,
+                       resController.text,
+                       gender);
 
-                 setState(() {
-                   joinTripState.updateRequestStatus(widget.tripId, true);
-                 });
+                   setState(() {
+                     joinTripState.updateRequestStatus(widget.tripId, true);
+                   });
 
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TripsPage(),));
-
-
+                   Navigator.pushReplacement(context,
+                       MaterialPageRoute(builder: (context) => TripsPage(),));
+                 }
+                 else {
+                   print('Cant send request again!');
+                 }
                }
                else{
-                 print('Cant send request again!');
+                 showSnackBar('Please fill all the details!', context);
                }
              }, child: Text(joinTripState.getRequestStatus(widget.tripId)?'Requested':'Send Request')))
            ],

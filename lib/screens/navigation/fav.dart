@@ -21,8 +21,9 @@ import '../../model/users.dart';
 import '../../providers/user_provider.dart';
 
 class Fav extends StatefulWidget {
-  final String? uid;
-  const Fav({Key? key, required this.uid}) : super(key: key);
+  //final String? uid;
+  final int postId;
+  const Fav({Key? key, required this.postId}) : super(key: key);
   @override
   _FavState createState() => _FavState();
 }
@@ -62,30 +63,62 @@ class _FavState extends State<Fav> {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final auth.User? user = _auth.currentUser;
     String? uid=user?.uid;
-    fetchPosts();
+   // fetchPosts();
+    fetchPostById(widget.postId);
 
   }
-
-  Future<void> fetchPosts() async {
+  Future<void> fetchPostById(int postId) async {
     try {
-      final response = await http.get(Uri.parse('http://$ip:9000/posts'));
-
+      final response = await http.get(Uri.parse('http://$ip:9000/posts/postId/$postId'));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final dynamic responseData = json.decode(response.body);
 
-        setState(() {
-          // Parse the JSON data and create a list of Post objects
-          posts = (data as List).map((model) => Post.fromJson(model)).toList();
-        });
+        if (responseData is List) {
+          final dynamic postData = responseData.isNotEmpty ? responseData[0] : null;
+          if (postData != null) {
+            setState(() {
+              posts = [Post.fromJson(postData)]; // Update the state with the fetched post
+            });
+          } else {
+            throw Exception('Post with ID $postId not found');
+          }
+        } else if (responseData is Map<String, dynamic>) {
+          setState(() {
+            posts = [Post.fromJson(responseData)]; // Update the state with the fetched post
+          });
+        } else {
+          throw Exception('Unexpected response format');
+        }
       } else {
-        print('HTTP Request Error: ${response.statusCode}');
-        throw Exception('Failed to load posts');
+        throw Exception('Failed to load post with ID: $postId');
       }
     } catch (e) {
       print('Error: $e');
       // Handle the error, e.g., show an error message to the user
     }
   }
+
+
+  // Future<void> fetchPosts() async {
+  //   try {
+  //     final response = await http.get(Uri.parse('http://$ip:9000/posts'));
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //
+  //       setState(() {
+  //         // Parse the JSON data and create a list of Post objects
+  //         posts = (data as List).map((model) => Post.fromJson(model)).toList();
+  //       });
+  //     } else {
+  //       print('HTTP Request Error: ${response.statusCode}');
+  //       throw Exception('Failed to load posts');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //     // Handle the error, e.g., show an error message to the user
+  //   }
+  // }
 
   // Future<void> fetchPostsById(String? uid) async {
   //   try {
@@ -392,156 +425,159 @@ class _FavState extends State<Fav> {
                 print(post);
                 return Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        post.location,
-                        style: GoogleFonts.montserrat(
-                            fontSize: 30, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        post.description,
-                        style: GoogleFonts.montserrat(
-                            fontSize: 15, color: Colors.grey.shade500),
-                      ),
-                      SizedBox(height: 16),
-                      Container(
-                        height: 355,
-                        width: 400,
-                        color: Colors.white.withOpacity(0.1),
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.only(top: 10, left: 30, right: 30),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Duration',
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 15, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    post.duration,
-                                    style: GoogleFonts.montserrat(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Divider(height: 30, thickness: 1),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Category',
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 15, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    post.category,
-                                    style: GoogleFonts.montserrat(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Divider(height: 30, thickness: 1),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Budget',
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 15, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    '\₹${post.budget.toStringAsFixed(2)} k',
-                                    style: GoogleFonts.montserrat(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Divider(height: 30, thickness: 1),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Seasons',
-                                    style: GoogleFonts.montserrat(
-                                        fontSize: 15, fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(onPressed: (){
-                                    setState(() {
-                                      post.showSeasons = !post.showSeasons;
-                                    });
-                                    if (post.showSeasons==true) {
-                                      fetchSeasons(post.id);
-                                    }
-
-                                  }, icon: post.showSeasons==false?Icon(Icons.arrow_drop_up):Icon(Icons.arrow_drop_down_outlined)),
-                                  ElevatedButton(
-                                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
-                                      onPressed: (){
-                                    print(post.id);
-                                    fetchItinerary(post.id);
-                                    // fetchPlaces(post.id);
-                                    print('Duration: ${post.duration}');
-                                    print('Places: ${places}');
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewItinerary(duration: post.duration,id:post.id,title:post.location),
-                                      ));
-
-                                    //fetchTimes(post.id);
-                                    print(post.places);
-
-                                  }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.black),)),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              if(post.showSeasons)
-                                Wrap(
-                                  spacing: 8.0,
-                                  runSpacing: 4.0,
-                                  children: post.seasons.map((seasonName) {
-                                    return Chip(
-                                      label: Text(seasonName.season_name),
-                                      backgroundColor: Colors.green.shade200,
-                                      labelStyle:
-                                      TextStyle(color: Colors.green.shade900),
-                                    );
-                                  }).toList(),
+                  child: Stack(
+                    children:[
+                      Column(
+                      children: [
+                        Text(
+                          post.location,
+                          style: GoogleFonts.montserrat(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          post.description,
+                          style: GoogleFonts.montserrat(
+                              fontSize: 15, color: Colors.grey.shade500),
+                        ),
+                        SizedBox(height: 16),
+                        Container(
+                          height: 355,
+                          width: 400,
+                          color: Colors.white.withOpacity(0.1),
+                          child: Padding(
+                            padding:
+                            const EdgeInsets.only(top: 10, left: 30, right: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Duration',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 15, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      post.duration,
+                                      style: GoogleFonts.montserrat(fontSize: 15),
+                                    ),
+                                  ],
                                 ),
+                                Divider(height: 30, thickness: 1),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Category',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 15, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      post.category,
+                                      style: GoogleFonts.montserrat(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Divider(height: 30, thickness: 1),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Budget',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 15, fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      '\₹${post.budget.toStringAsFixed(2)} k',
+                                      style: GoogleFonts.montserrat(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                Divider(height: 30, thickness: 1),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Seasons',
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 15, fontWeight: FontWeight.bold),
+                                    ),
+                                    IconButton(onPressed: (){
+                                      setState(() {
+                                        post.showSeasons = !post.showSeasons;
+                                      });
+                                      if (post.showSeasons==true) {
+                                        fetchSeasons(post.id);
+                                      }
 
-                              // if (post.showSeasons)
-                              //   Wrap(
-                              //     spacing: 8.0,
-                              //     runSpacing: 4.0,
-                              //     children: season.map((seasonName) {
-                              //       return Chip(
-                              //         label: Text(seasonName.season_name),
-                              //         backgroundColor: Colors.green.shade200,
-                              //         labelStyle: TextStyle(color: Colors.green.shade900),
-                              //       );
-                              //     }).toList(),
-                              //   ),
+                                    }, icon: post.showSeasons==false?Icon(Icons.arrow_drop_up):Icon(Icons.arrow_drop_down_outlined)),
+                                    ElevatedButton(
+                                      style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green.shade100)),
+                                        onPressed: (){
+                                      print(post.id);
+                                      fetchItinerary(post.id);
+                                      // fetchPlaces(post.id);
+                                      print('Duration: ${post.duration}');
+                                      print('Places: ${places}');
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => ViewItinerary(duration: post.duration,id:post.id,title:post.location),
+                                        ));
 
-                              //                 if(post.showSeasons)
-                              //                   for(int i=0;i<season.length;i++)
-                              //                    // Text('Email: ${season[i].season_name}'),
-                              // Chip(
-                              //       label: Text('${season[i].season_name}'),
-                              //       backgroundColor: Colors.green.shade200,
-                              //       labelStyle:
-                              //       TextStyle(color: Colors.green.shade900),
-                              //     ),
-                            ],
+                                      //fetchTimes(post.id);
+                                      print(post.places);
+
+                                    }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.black),)),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                if(post.showSeasons)
+                                  Wrap(
+                                    spacing: 8.0,
+                                    runSpacing: 4.0,
+                                    children: post.seasons.map((seasonName) {
+                                      return Chip(
+                                        label: Text(seasonName.season_name),
+                                        backgroundColor: Colors.green.shade200,
+                                        labelStyle:
+                                        TextStyle(color: Colors.green.shade900),
+                                      );
+                                    }).toList(),
+                                  ),
+
+                                // if (post.showSeasons)
+                                //   Wrap(
+                                //     spacing: 8.0,
+                                //     runSpacing: 4.0,
+                                //     children: season.map((seasonName) {
+                                //       return Chip(
+                                //         label: Text(seasonName.season_name),
+                                //         backgroundColor: Colors.green.shade200,
+                                //         labelStyle: TextStyle(color: Colors.green.shade900),
+                                //       );
+                                //     }).toList(),
+                                //   ),
+
+                                //                 if(post.showSeasons)
+                                //                   for(int i=0;i<season.length;i++)
+                                //                    // Text('Email: ${season[i].season_name}'),
+                                // Chip(
+                                //       label: Text('${season[i].season_name}'),
+                                //       backgroundColor: Colors.green.shade200,
+                                //       labelStyle:
+                                //       TextStyle(color: Colors.green.shade900),
+                                //     ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
 
-                      // Container(width: double.maxFinite,child: ElevatedButton(onPressed: (){
-                      //   Navigator.push(context, MaterialPageRoute(builder: (context) => AddItinerary(start: start, end: end, title: location, duration: duration, description: description, season: seasons, category: category, budget: budget),));
-                      // }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.7)),))
-                      // )
-                    ],
+                        // Container(width: double.maxFinite,child: ElevatedButton(onPressed: (){
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context) => AddItinerary(start: start, end: end, title: location, duration: duration, description: description, season: seasons, category: category, budget: budget),));
+                        // }, child: Text('View Itinerary',style: GoogleFonts.montserrat(color: Colors.white.withOpacity(0.7)),))
+                        // )
+                      ],
+                    ),]
                   ),
                 );
               },

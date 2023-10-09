@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ttravel_mate/screens/navigation/likes_chart.dart';
 import 'package:ttravel_mate/widget/back.dart';
 
 import '../../login_pages/auth_methods.dart';
+import '../../model/post.dart';
 import '../../model/users.dart';
 import '../start_screen.dart';
 
 class Settings extends StatefulWidget {
   List<Users> users;
-  Settings({Key? key,required this.users}) : super(key: key);
+  List<Post>posts;
+  Settings({Key? key,required this.users,required this.posts}) : super(key: key);
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -111,7 +114,10 @@ class _SettingsState extends State<Settings> {
                   }, child: Text('LOGOUT',style: GoogleFonts.montserrat(color: Colors.white,fontWeight: FontWeight.w500),
                   )),
                 ),
-                Text('Upcoming trips')
+                ElevatedButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LikesChart(posts: widget.posts),));
+                }, child: Text('Chart')),
+                //Text('Upcoming trips')
               ],
             ),
           ),
